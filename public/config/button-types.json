@@ -1,0 +1,162 @@
+{
+  "buttonTypes": [
+    {
+      "type": "settings",
+      "handlers": [
+        "startSettingsHold",
+        "stopSettingsHold",
+        "toggleTheme"
+      ],
+      "description": "Global UI chrome controls such as the settings lock hold and theme switcher."
+    },
+    {
+      "type": "pin",
+      "handlers": [
+        "enterPin",
+        "clearPin",
+        "closePinModal"
+      ],
+      "description": "PIN modal keypad and dismissal buttons used to unlock advanced settings."
+    },
+    {
+      "type": "system",
+      "handlers": [
+        "saveIp",
+        "checkStatus"
+      ],
+      "description": "Core Roku connection actions for saving an IP and loading device status."
+    },
+    {
+      "type": "kidMode-system",
+      "handlers": [
+        "checkStatus"
+      ],
+      "description": "Kid mode buttons that trigger system-level actions like finding the Roku."
+    },
+    {
+      "type": "kidMode-remote",
+      "handlers": [
+        "sendKey"
+      ],
+      "description": "Kid mode buttons mapped to Roku remote key presses such as Home or Volume."
+    },
+    {
+      "type": "kidMode-content",
+      "handlers": [
+        "launchSpecificYouTube",
+        "runFavoriteMacro"
+      ],
+      "description": "Kid mode content launchers (e.g., dance party) and the optional magic macro."
+    },
+    {
+      "type": "nowPlaying",
+      "handlers": [
+        "checkNowPlaying",
+        "showFullMediaInfo"
+      ],
+      "description": "Buttons inside the Now Playing card for refreshing metadata or showing XML."
+    },
+    {
+      "type": "appsGrid",
+      "handlers": [
+        "launchApp"
+      ],
+      "description": "Dynamic grid of installed/common Roku apps; each button launches an app ID."
+    },
+    {
+      "type": "quickLaunch",
+      "handlers": [
+        "launchSpecificYouTube"
+      ],
+      "description": "Curated quick launch thumbnails that start preset content."
+    },
+    {
+      "type": "deepLink",
+      "handlers": [
+        "launchDeepLink",
+        "launchYouTube",
+        "extractDisneyId",
+        "tryDisneyDeepLinkSingle",
+        "tryDisneyDeepLink"
+      ],
+      "description": "Deep link utilities for launching arbitrary content and helper workflows."
+    },
+    {
+      "type": "remote",
+      "handlers": [
+        "sendKey"
+      ],
+      "description": "Full Roku remote grid (backs kid-mode remote buttons) for advanced users."
+    },
+    {
+      "type": "tts",
+      "handlers": [
+        "speakTts"
+      ],
+      "description": "Buttons that play a spoken phrase using the browser's speech synthesis."
+    },
+    {
+      "type": "macroBuilder",
+      "handlers": [
+        "addMacroStep",
+        "handleMacroSubmit"
+      ],
+      "description": "Macro creation form buttons that add steps and save the routine."
+    },
+    {
+      "type": "macroRuntime",
+      "handlers": [
+        "runMacro",
+        "setFavoriteMacro",
+        "deleteMacro",
+        "runFavoriteMacro"
+      ],
+      "description": "Buttons rendered with each saved macro card and the kid-mode magic button."
+    },
+    {
+      "type": "macroSupport",
+      "handlers": [
+        "openMacroHelp"
+      ],
+      "description": "Utility button that surfaces macro usage tips."
+    }
+  ],
+  "contentProviders": [
+    {
+      "type": "youtube",
+      "sourceButtons": [
+        "launchSpecificYouTube",
+        "launchYouTube"
+      ],
+      "availableByDefault": true,
+      "notes": "Used by kid-mode quick actions and the advanced quick launch panel."
+    },
+    {
+      "type": "disneyPlus",
+      "sourceButtons": [
+        "extractDisneyId",
+        "tryDisneyDeepLinkSingle",
+        "tryDisneyDeepLink"
+      ],
+      "availableByDefault": true,
+      "notes": "Deep link helper supports multiple Disney+ parameter formats."
+    },
+    {
+      "type": "app",
+      "sourceButtons": [
+        "launchApp",
+        "launchDeepLink"
+      ],
+      "availableByDefault": true,
+      "notes": "Covers Roku-installed apps (apps grid) and manual deep link launches."
+    },
+    {
+      "type": "paramountPlus",
+      "sourceButtons": [
+        "launchDeepLink"
+      ],
+      "availableByDefault": false,
+      "notes": "Supported through deep links when the Paramount+ app ID is provided."
+    }
+  ]
+}

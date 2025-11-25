@@ -1,0 +1,26 @@
+[package]
+name = "roku_control_app"
+version = "0.1.0"
+description = "Roku Control native shell powered by Tauri"
+edition = "2021"
+
+[lib]
+name = "roku_control_app"
+path = "src/lib.rs"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[[bin]]
+name = "roku-control-app"
+path = "src/main.rs"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tauri = { version = "2.0.0-rc.13", features = ["wry"] }
+reqwest = { version = "0.11", default-features = false, features = ["blocking", "json", "rustls-tls"] }
+thiserror = "1"
+tauri-plugin-blec = "0.5"
+tokio = { version = "1", features = ["time"] }
+
+[build-dependencies]
+tauri-build = { version = "2.0.0-rc.13", features = [] }

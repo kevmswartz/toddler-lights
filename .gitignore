@@ -1,0 +1,27 @@
+# Build artifacts
+dist/
+
+# Tauri generated build output (keep final bundles)
+src-tauri/target/
+!src-tauri/target/release/
+!src-tauri/target/release/bundle/
+!src-tauri/target/release/bundle/**
+
+src-tauri/gen/android/.gradle/
+src-tauri/gen/android/.cxx/
+src-tauri/gen/android/build/
+src-tauri/gen/android/app/build/
+!src-tauri/gen/android/app/build/outputs/
+!src-tauri/gen/android/app/build/outputs/**
+
+# Dependencies
+node_modules/
+
+# Local keystore (ignored by default)
+roku-control.keystore
+
+# Local config overrides
+public/config/app-config.custom.json
+
+# Local Netlify folder
+.netlify

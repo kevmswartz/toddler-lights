@@ -1,0 +1,29 @@
+[build]
+  # Publish directory for the static site
+  publish = "netlify/public"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+# Redirect /api/* to Netlify Functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Enable CORS for API endpoints
+[[headers]]
+  for = "/api/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+
+# Enable Netlify Blobs
+[blobs]
+  enabled = true
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["@netlify/blobs"]
