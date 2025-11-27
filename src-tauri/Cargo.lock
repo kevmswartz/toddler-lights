@@ -3023,20 +3023,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "roku_control_app"
-version = "0.1.0"
-dependencies = [
- "reqwest 0.11.27",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-blec",
- "thiserror 1.0.69",
- "tokio",
-]
-
-[[package]]
 name = "rustc_version"
 version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4038,6 +4024,20 @@ checksum = "5d4f6d1145dcb577acf783d4e601bc1d76a13337bb54e6233add580b07344c8b"
 dependencies = [
  "displaydoc",
  "zerovec",
+]
+
+[[package]]
+name = "toddler_lights"
+version = "0.1.0"
+dependencies = [
+ "reqwest 0.11.27",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-blec",
+ "thiserror 1.0.69",
+ "tokio",
 ]
 
 [[package]]

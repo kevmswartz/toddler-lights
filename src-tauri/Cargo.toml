@@ -1,16 +1,16 @@
 [package]
-name = "roku_control_app"
+name = "toddler_lights"
 version = "0.1.0"
-description = "Roku Control native shell powered by Tauri"
+description = "Toddler Lights native shell powered by Tauri"
 edition = "2021"
 
 [lib]
-name = "roku_control_app"
+name = "toddler_lights"
 path = "src/lib.rs"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [[bin]]
-name = "roku-control-app"
+name = "toddler-lights"
 path = "src/main.rs"
 
 [dependencies]

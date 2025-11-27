@@ -1,35 +1,10 @@
 mod bridges;
 mod error;
 
-use bridges::{govee::{GoveeSender, GoveeCloudClient}, roku::RokuHttpClient};
+use bridges::{govee::{GoveeSender, GoveeCloudClient}};
 use tauri::Manager;
 
-#[tauri::command]
-async fn roku_get(
-    state: tauri::State<'_, RokuHttpClient>,
-    url: String,
-) -> Result<String, String> {
-    state.get(&url).await.map_err(|err| err.to_string())
-}
 
-#[tauri::command]
-async fn roku_post(
-    state: tauri::State<'_, RokuHttpClient>,
-    url: String,
-    body: Option<String>,
-) -> Result<(), String> {
-    state
-        .post(&url, body.as_deref())
-        .await
-        .map_err(|err| err.to_string())
-}
-
-#[tauri::command]
-async fn roku_discover(timeout_secs: Option<u64>) -> Result<Vec<bridges::roku::RokuDevice>, String> {
-    bridges::roku::discover_roku_devices(timeout_secs)
-        .await
-        .map_err(|err| err.to_string())
-}
 
 #[tauri::command]
 async fn govee_send(
@@ -113,15 +88,13 @@ pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_blec::init())
         .setup(|app| {
-            app.manage(RokuHttpClient::default());
+
             app.manage(GoveeSender::default());
             app.manage(GoveeCloudClient::default());
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
-            roku_get,
-            roku_post,
-            roku_discover,
+
             govee_send,
             govee_discover,
             govee_status,
@@ -132,5 +105,5 @@ pub fn run() {
             is_wifi_connected
         ])
         .run(tauri::generate_context!())
-        .expect("error while running Roku Control");
+        .expect("error while running Toddler Lights");
 }

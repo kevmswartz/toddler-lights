@@ -1,11 +1,11 @@
 {
-  "name": "roku-control",
+  "name": "toddler-lights",
   "version": "1.0.0",
-  "description": "Web-based Roku remote control with app launching",
+  "description": "Toddler Lights application",
   "keywords": [
-    "roku",
-    "remote",
-    "control"
+    "toddler",
+    "lights",
+    "govee"
   ],
   "author": "",
   "license": "MIT",

@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Roku Control",
+  "productName": "Toddler Lights",
   "version": "1.0.0",
-  "identifier": "com.eli.rokucontrol",
+  "identifier": "com.eli.toddlerlights",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
@@ -12,12 +12,14 @@
     "withGlobalTauri": true,
     "security": {
       "csp": null,
-      "capabilities": ["default"]
+      "capabilities": [
+        "default"
+      ]
     },
     "windows": [
       {
         "label": "main",
-        "title": "Roku Control",
+        "title": "Toddler Lights",
         "width": 1024,
         "height": 768,
         "resizable": true

@@ -1,8 +1,8 @@
 param(
-    [string]$KeystorePath = "$PWD\roku-control.keystore",
+    [string]$KeystorePath = "$PWD\toddler-lights.keystore",
     [string]$KeyAlias = "rokuControl",
-    [string]$ApkOutput = "$PWD\app-release-signed.apk",
-    [string]$ExeOutput = "$PWD\roku-control.exe",
+    [string]$ApkOutput = "$PWD\toddler-lights-signed.apk",
+    [string]$ExeOutput = "$PWD\toddler-lights.exe",
     [string]$BuildToolsVersion = "34.0.0",
     [string]$AndroidTargets = "aarch64"
 )
@@ -37,7 +37,7 @@ function Invoke-CommandChecked {
 Write-Host "Building desktop release..." -ForegroundColor Cyan
 Invoke-CommandChecked -Command "npm" -Arguments @("run", "tauri:build") -WorkDir "$PWD"
 
-$RawExe = Join-Path $PWD "src-tauri\target\release\roku-control-app.exe"
+$RawExe = Join-Path $PWD "src-tauri\target\release\toddler-lights.exe"
 if (Test-Path $RawExe) {
     Copy-Item -Path $RawExe -Destination $ExeOutput -Force
     Write-Host "Copied native executable to $ExeOutput"
