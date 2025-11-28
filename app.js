@@ -3,56 +3,47 @@
 const DEFAULT_PIN_CODE = '1234';
 const HOLD_DURATION = 2000; // 2 seconds to hold
 const PROGRESS_CIRCUMFERENCE = 163;
-const STATUS_VARIANTS = {
-    info: { icon: 'ℹ️', classes: 'bg-white/20 text-white' },
-    success: { icon: '✅', classes: 'bg-emerald-400/20 text-emerald-50 border border-emerald-200/40' },
-    error: { icon: '⚠️', classes: 'bg-rose-500/20 text-rose-50 border border-rose-200/40' }
-};
-const INLINE_VARIANTS = {
-    info: 'bg-slate-950/60 text-indigo-100',
-    success: 'bg-emerald-500/20 text-emerald-50 border border-emerald-200/40',
-    error: 'bg-rose-500/20 text-rose-50 border border-rose-200/40'
-};
+// STATUS_VARIANTS and INLINE_VARIANTS now defined in lights.js
+// const STATUS_VARIANTS = { ... };
+// const INLINE_VARIANTS = { ... };
 const QUICK_ACTION_COOLDOWN_MS = 1000;
 const quickActionCooldowns = new Map();
 
-const CONFIG_BASE_PATH = 'config';
-const APP_CONFIG_PATH = `${CONFIG_BASE_PATH}/app-config.json`;
-const APP_CONFIG_CUSTOM_PATH = `${CONFIG_BASE_PATH}/app-config.custom.json`;
-const BUTTON_TYPES_CONFIG_PATH = `${CONFIG_BASE_PATH}/button-types.json`;
-const TODDLER_CONTENT_PASSPHRASE_KEY = 'toddler_content_passphrase';
-const NETLIFY_CONFIG_API_BASE = 'https://toddler-phone-control.netlify.app/api/config';
+// Constants now defined in lights.js
+// const CONFIG_BASE_PATH = 'config';
+// const APP_CONFIG_PATH = `${CONFIG_BASE_PATH}/app-config.json`;
+// const APP_CONFIG_CUSTOM_PATH = `${CONFIG_BASE_PATH}/app-config.custom.json`;
+// const BUTTON_TYPES_CONFIG_PATH = `${CONFIG_BASE_PATH}/button-types.json`;
+// const TODDLER_CONTENT_PASSPHRASE_KEY = 'toddler_content_passphrase';
+// const NETLIFY_CONFIG_API_BASE = 'https://toddler-phone-control.netlify.app/api/config';
 const TIMER_CIRCUMFERENCE = 2 * Math.PI * 54;
 const PARENTAL_PIN_STORAGE_KEY = 'parental_pin';
 
-const TAB_DEFINITIONS = {
-    'apps': {
-        label: 'Apps',
-        icon: '📱',
-        sections: ['kidQuickSection']
-    },
-    'settings': {
-        label: 'Settings',
-        icon: '⚙️',
-        sections: ['parentalControlsSection']
-    }
-};
-const TAB_MANAGED_SECTION_IDS = Array.from(
-    new Set(
-        Object.values(TAB_DEFINITIONS).flatMap(def => Array.isArray(def.sections) ? def.sections : [])
-    )
-);
+// TAB_DEFINITIONS now defined in lights.js
+// const TAB_DEFINITIONS = { ... };
+// TAB_MANAGED_SECTION_IDS now defined in lights.js
+// const TAB_MANAGED_SECTION_IDS = ...
 
 
 // Store latest media data for detailed view
 let latestMediaData = null;
 
-let toddlerSpecialButtons = [];
-let toddlerQuickLaunchItems = [];
+// toddlerSpecialButtons and toddlerQuickLaunchItems now defined in lights.js
+// let toddlerSpecialButtons = [];
+// let toddlerQuickLaunchItems = [];
 
-let toddlerContentSource = { type: 'bundled', path: APP_CONFIG_PATH };
-let buttonTypeCatalog = null;
-let tabsConfig = null;
+// toddlerContentSource now defined in lights.js
+// let toddlerContentSource = { type: 'bundled', path: APP_CONFIG_PATH };
+// buttonTypeCatalog now defined in lights.js
+// let buttonTypeCatalog = null;
+// tabsConfig now defined in lights.js
+// let tabsConfig = null;
+
+// Global definitions for Tauri/Native runtime
+// Global definitions for Tauri/Native runtime
+// tauriInvoke and isNativeRuntime now defined in tauri-bridge.js/lights.js
+// const isNativeRuntime = (typeof window !== 'undefined' && window.isNativeRuntime) || (typeof window !== 'undefined' && window.__TAURI__ !== undefined);
+// const tauriInvoke = (typeof window !== 'undefined' && window.tauriInvoke) || (isNativeRuntime && window.__TAURI__ ? window.__TAURI__.invoke : null);
 
 
 
@@ -84,6 +75,11 @@ function setLocalParentalPin(pin) {
     updateParentalControlsUI();
 }
 
+function setRemotePinCode(pin) {
+    remotePinCode = pin;
+    updateParentalControlsUI();
+}
+
 
 
 function getActivePinCode() {
@@ -95,7 +91,8 @@ let holdProgress = 0;
 let isHolding = false;
 let settingsUnlocked = false;
 let currentPin = '';
-let toastTimer = null;
+// toastTimer now defined in lights.js
+// let toastTimer = null;
 let timerAnimationFrame = null;
 let timerEndTimestamp = 0;
 let timerDurationMs = 0;
@@ -105,13 +102,42 @@ let fireworksTimeout = null;
 let nativeTtsStatusTimeout = null;
 let selectedTimerEmoji = '⭐';
 let currentTimerAnimation = 0;
+let remotePinCode = null;
 
 function getNativeTtsBridge() {
     if (typeof window === 'undefined') return undefined;
     return window.NativeTts;
 }
 
+function showStatus(message, type = 'info') {
+    const statusEl = document.getElementById('statusMessage');
+    if (!statusEl) return;
+
+    if (toastTimer) {
+        clearTimeout(toastTimer);
+        toastTimer = null;
+    }
+
+    const variant = STATUS_VARIANTS[type] || STATUS_VARIANTS.info;
+
+    statusEl.className = `status-message fixed left-1/2 top-6 z-50 -translate-x-1/2 transform rounded-full px-6 py-3 text-sm font-semibold shadow-xl backdrop-blur transition-all duration-300 ${variant.classes}`;
+    statusEl.textContent = `${variant.icon} ${message}`;
+
+    statusEl.classList.remove('hidden', 'opacity-0', '-translate-y-full');
+    statusEl.classList.add('flex', 'opacity-100', 'translate-y-0');
+
+    toastTimer = setTimeout(() => {
+        statusEl.classList.remove('opacity-100', 'translate-y-0');
+        statusEl.classList.add('opacity-0', '-translate-y-full');
+        setTimeout(() => {
+            statusEl.classList.add('hidden');
+            statusEl.classList.remove('flex');
+        }, 300);
+    }, 3000);
+}
+
 function buildTabFromDefinition(definition, overrides = {}) {
+    if (!definition) return { id: 'unknown', label: 'Unknown', icon: '❓', sections: [] };
     const label = (overrides.customLabel || '').trim();
     const icon = (overrides.customIcon || '').trim();
     return {
@@ -390,7 +416,8 @@ function updateCloudEditorVisibility() {
     }
 }
 
-let currentLoadedConfig = null; // Store the current config for editing
+// currentLoadedConfig now defined in lights.js
+// let currentLoadedConfig = null; // Store the current config for editing
 
 function loadCurrentConfigIntoEditor() {
     const textarea = document.getElementById('cloudConfigJson');
@@ -591,17 +618,9 @@ function applyToddlerContent(data) {
 }
 
 async function fetchToddlerContentFromUrl(url) {
-    // Use Tauri bridge in native mode to bypass CORS
-    if (isNativeRuntime && tauriInvoke) {
-        try {
-            const raw = await tauriInvoke('roku_get', { url });
-            return JSON.parse(raw);
-        } catch (error) {
-            throw new Error(`Failed to fetch via native bridge: ${error.message || error}`);
-        }
-    }
 
-    // Fallback to browser fetch for web mode
+
+    // Fallback to browser fetch for web mode or if native fails
     const response = await fetch(url, { cache: 'no-store' });
     if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
@@ -923,6 +942,99 @@ function initMagicControls() {
 }
 
 // Initialize on load
+async function discoverAndRegisterAllDevices() {
+    if (!isNativeRuntime || !tauriInvoke) {
+        console.log('Skipping device discovery (not native)');
+        return;
+    }
+
+    showStatus('Looking for devices...', 'info');
+
+    try {
+        // Run discovery for Roku
+        // Note: Assuming 'roku_discover' returns a list of devices
+        const rokuDevices = await tauriInvoke('roku_discover').catch(err => {
+            // console.warn('Roku discovery failed:', err);
+            return [];
+        });
+
+        // Run discovery for Govee (if supported)
+        const goveeDevices = await tauriInvoke('govee_discover').catch(err => {
+            console.warn('Govee discovery failed:', err);
+            return [];
+        });
+
+        const registry = getDeviceRegistry();
+        let newCount = 0;
+
+        // Update registry
+        if (Array.isArray(rokuDevices)) {
+            rokuDevices.forEach(device => {
+                if (!registry.roku[device.id]) newCount++;
+                registry.roku[device.id] = device;
+            });
+        }
+
+        if (Array.isArray(goveeDevices)) {
+            goveeDevices.forEach(device => {
+                if (!registry.govee[device.id]) newCount++;
+                registry.govee[device.id] = device;
+            });
+        }
+
+        saveDeviceRegistry(registry);
+
+        // Save to cloud if possible and if we found something
+        if (newCount > 0 || Object.keys(registry.roku).length > 0) {
+            await saveDeviceListToCloud(Object.values(registry.roku), 'roku');
+            await saveDeviceListToCloud(Object.values(registry.govee), 'govee');
+        }
+
+        if (newCount > 0) {
+            showStatus(`Found ${newCount} new devices!`, 'success');
+        } else {
+            console.log('Discovery complete. No new devices found.');
+        }
+    } catch (error) {
+        console.error('Discovery process failed:', error);
+        showStatus('Device discovery failed.', 'error');
+    }
+}
+
+async function launchConfiguredApp(config) {
+    if (!config) return;
+
+    const appId = config.appId;
+    const params = config.params || {};
+
+    if (isNativeRuntime && tauriInvoke) {
+        try {
+            await tauriInvoke('roku_launch_app', { appId, params });
+            // showStatus(`Launched ${config.label || 'App'}`, 'success');
+        } catch (error) {
+            console.error('Failed to launch app:', error);
+            showStatus('Failed to launch app on TV.', 'error');
+        }
+    } else {
+        console.log('Mock launch app:', appId, params);
+        showStatus(`(Demo) Launching ${config.label || appId}...`, 'success');
+    }
+}
+
+async function launchSpecificYouTube(videoId) {
+    if (!videoId) return;
+
+    const config = {
+        appId: '837', // Standard YouTube App ID on Roku
+        label: 'YouTube',
+        params: { contentId: videoId, mediaType: 'live' }
+    };
+
+    await launchConfiguredApp(config);
+}
+
+// DOMContentLoaded listener now handled in lights.js
+/*
 window.addEventListener('DOMContentLoaded', async () => {
     // Log runtime info for debugging
     if (isNativeRuntime) {
@@ -963,35 +1075,18 @@ window.addEventListener('DOMContentLoaded', async () => {
 
     window.addEventListener('offline', async () => {
         console.log('Network connection lost');
-        await renderBottomTabs(); // Re-render tabs to hide Roku tab
     });
-
-    const savedIp = localStorage.getItem(STORAGE_KEY);
-    if (savedIp) {
-        document.getElementById('rokuIp').value = savedIp;
-        showStatus('Found saved IP: ' + savedIp + '. Attempting to connect...', 'info');
-
-        // Try to auto-connect
-        try {
-            await checkStatus();
-        } catch (error) {
-            showStatus('Could not connect to saved IP: ' + savedIp + '. Ask a grown-up to double-check it in settings.', 'error');
-        }
-    } else {
-        showStatus('No Roku IP saved yet. Ask a grown-up to unlock settings and type it in.', 'info');
-    }
-
-    initMacroSystem();
 
     // Initialize room detection system
     await loadRoomConfig();
     updateRoomUI();
 
     // Start auto room detection if enabled
-    if (roomConfig?.settings?.autoDetect && isNativeRuntime) {
+    if (typeof roomConfig !== 'undefined' && roomConfig?.settings?.autoDetect && isNativeRuntime) {
         startRoomDetection();
     }
 });
+*/
 
 async function loadToddlerContent({ forceRefresh = false } = {}) {
     const passphrase = getToddlerContentPassphrase().trim();
@@ -1039,11 +1134,9 @@ async function loadToddlerContent({ forceRefresh = false } = {}) {
 
 function renderToddlerButtons(remoteButtons = [], appsButtons = [], quickLaunch = []) {
     const quickColumn = document.getElementById('toddlerQuickColumn');
-    const remoteColumn = document.getElementById('toddlerRemoteColumn');
-    if (!quickColumn || !remoteColumn) return;
+    if (!quickColumn) return;
 
     quickColumn.innerHTML = '';
-    remoteColumn.innerHTML = '';
 
     // Separate apps buttons by whether they have thumbnails
     const appsButtonsWithImages = appsButtons.filter(btn => btn.thumbnail);
@@ -1069,9 +1162,6 @@ function renderToddlerButtons(remoteButtons = [], appsButtons = [], quickLaunch 
             }
         });
     }
-
-    renderRemoteColumn(remoteColumn, remoteButtons);
-    updateFavoriteMacroButton();
 }
 
 
@@ -1168,95 +1258,11 @@ function createQuickButtonElement(config) {
     return buttonEl;
 }
 
-function renderRemoteColumn(container, remoteButtons) {
-    if (!Array.isArray(remoteButtons) || remoteButtons.length === 0) {
-        const emptyState = document.createElement('div');
-        emptyState.className = 'rounded-3xl bg-white/10 px-4 py-6 text-center text-sm text-indigo-100';
-        emptyState.textContent = 'Remote controls will appear here once configured.';
-        container.appendChild(emptyState);
-        return;
-    }
 
-    const remoteMap = new Map(remoteButtons.map(btn => [btn.id, btn]));
 
-    if (!remoteMap.has('backButton')) {
-        remoteMap.set('backButton', {
-            id: 'backButton',
-            emoji: '⟵',
-            label: 'Go Back',
-            handler: 'sendKey',
-            args: ['Back']
-        });
-    }
 
-    const navGrid = document.createElement('div');
-    navGrid.className = 'grid grid-cols-3 gap-3';
 
-    navGrid.appendChild(createRemoteButton(remoteMap.get('backButton')) || createRemoteSpacer());
-    navGrid.appendChild(createRemoteButton(remoteMap.get('homeButton')) || createRemoteSpacer());
-    navGrid.appendChild(createRemoteButton(remoteMap.get('findRokuButton')) || createRemoteSpacer());
 
-    navGrid.appendChild(createRemoteSpacer());
-    navGrid.appendChild(createRemoteButton(remoteMap.get('upButton')) || createRemoteSpacer());
-    navGrid.appendChild(createRemoteSpacer());
-
-    navGrid.appendChild(createRemoteButton(remoteMap.get('leftButton')) || createRemoteSpacer());
-    navGrid.appendChild(createRemoteButton(remoteMap.get('selectButton')) || createRemoteSpacer());
-    navGrid.appendChild(createRemoteButton(remoteMap.get('rightButton')) || createRemoteSpacer());
-
-    navGrid.appendChild(createRemoteButton(remoteMap.get('instantReplayButton')) || createRemoteSpacer());
-    navGrid.appendChild(createRemoteButton(remoteMap.get('downButton')) || createRemoteSpacer());
-    navGrid.appendChild(createRemoteButton(remoteMap.get('playPauseButton')) || createRemoteSpacer());
-
-    container.appendChild(navGrid);
-
-    const bottomRow = document.createElement('div');
-    bottomRow.className = 'grid gap-3';
-    const powerBtn = createRemoteButton(remoteMap.get('powerButton'));
-    if (powerBtn) bottomRow.appendChild(powerBtn);
-    if (bottomRow.childElementCount) {
-        container.appendChild(bottomRow);
-    }
-}
-
-function createRemoteButton(config) {
-    if (!config) return null;
-    const button = document.createElement('button');
-    button.type = 'button';
-    button.className = 'flex h-20 items-center justify-center rounded-3xl bg-white text-indigo-600 text-2xl font-bold shadow-xl transition hover:-translate-y-1 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-white/50 active:scale-95 touch-manipulation select-none';
-
-    if (config.id) {
-        button.id = `${config.id}-remote`;
-    }
-
-    button.setAttribute('aria-label', config.label || config.emoji || 'Remote button');
-
-    button.addEventListener('click', () => invokeToddlerHandler(config));
-
-    const iconSpan = document.createElement('span');
-    iconSpan.className = 'text-3xl';
-    iconSpan.textContent = config.emoji || '';
-
-    const hideLabel = ['Up', 'Down', 'Left', 'Right'].includes(config.label || '');
-    if (config.emoji) {
-        button.appendChild(iconSpan);
-    }
-    if (config.label && (!hideLabel || !config.emoji)) {
-        const labelSpan = document.createElement('span');
-        labelSpan.className = config.emoji ? 'ml-2 text-lg font-semibold' : 'text-lg font-semibold';
-        labelSpan.textContent = config.label;
-        button.appendChild(labelSpan);
-    }
-
-    return button;
-}
-
-function createRemoteSpacer() {
-    const spacer = document.createElement('div');
-    spacer.className = 'h-20 select-none opacity-0';
-    spacer.setAttribute('aria-hidden', 'true');
-    return spacer;
-}
 
 function invokeToddlerHandler(config) {
     if (config?.launchItem) {
@@ -1782,7 +1788,9 @@ function createFireworkBurst(stage, options = {}) {
 }
 
 // Device Registry System
-const DEVICE_REGISTRY_KEY = 'device_registry';
+// DEVICE_REGISTRY_KEY and STORAGE_KEY now defined in lights.js
+// const DEVICE_REGISTRY_KEY = 'device_registry';
+// const STORAGE_KEY = 'roku_ip_address';
 
 function getDeviceRegistry() {
     try {

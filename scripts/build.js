@@ -9,7 +9,8 @@ const watchMode = args.includes('--watch');
 
 const staticFiles = [
   'index.html',
-  'app.js'
+  'app.js',
+  'lights.js'
   // Config files (app-config.json, button-types.json, rooms.json) are in public/config/
   // and are copied via copyDirectoryContents('public', distDir) below
 ];

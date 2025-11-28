@@ -6,6 +6,8 @@ const GOVEE_DEFAULT_PORT = 4003;
 const GOVEE_MIN_BRIGHTNESS = 1;
 const GOVEE_POWER_STATE_PREFIX = 'govee_power_state_';
 const GOVEE_API_KEY_STORAGE_KEY = 'govee_api_key';
+// Govee Lights Control App
+// Constants inherited from app.js
 const CONFIG_BASE_PATH = 'config';
 const APP_CONFIG_PATH = `${CONFIG_BASE_PATH}/app-config.json`;
 const APP_CONFIG_CUSTOM_PATH = `${CONFIG_BASE_PATH}/app-config.custom.json`;
@@ -17,36 +19,19 @@ const GOVEE_STATUS_VARIANTS = {
     success: 'bg-emerald-500/20 text-emerald-50 border border-emerald-200/40',
     error: 'bg-rose-500/20 text-rose-50 border border-rose-200/40'
 };
-const tauriBridge = typeof window !== 'undefined' ? window.__TAURI__ : undefined;
-const tauriInvoke = (() => {
-    if (!tauriBridge) return undefined;
-    if (typeof tauriBridge.invoke === 'function') {
-        return tauriBridge.invoke.bind(tauriBridge);
-    }
-    if (typeof tauriBridge.core?.invoke === 'function') {
-        return tauriBridge.core.invoke.bind(tauriBridge.core);
-    }
-    if (typeof tauriBridge.tauri?.invoke === 'function') {
-        return tauriBridge.tauri.invoke.bind(tauriBridge.tauri);
-    }
-    return undefined;
-})();
-const isNativeRuntime = Boolean(tauriInvoke);
-const goveeLanBridge = (() => {
-    if (typeof window === 'undefined') return undefined;
-    if (!window.goveeLan && tauriInvoke) {
-        window.goveeLan = {
-            send: async ({ host, port, body }) => {
-                await tauriInvoke('govee_send', { host, port, body: body ?? '' });
-                return { host, port };
-            },
-            discover: async (options = {}) => {
-                return tauriInvoke('govee_discover', options);
-            }
-        };
-    }
-    return window.goveeLan;
-})();
+
+const STATUS_VARIANTS = {
+    info: { icon: 'ℹ️', classes: 'bg-white/20 text-white' },
+    success: { icon: '✅', classes: 'bg-emerald-400/20 text-emerald-50 border border-emerald-200/40' },
+    error: { icon: '⚠️', classes: 'bg-rose-500/20 text-rose-50 border border-rose-200/40' }
+};
+
+const INLINE_VARIANTS = {
+    info: 'bg-slate-950/60 text-indigo-100',
+    success: 'bg-emerald-500/20 text-emerald-50 border border-emerald-200/40',
+    error: 'bg-rose-500/20 text-rose-50 border border-rose-200/40'
+};
+// Tauri bridge definitions inherited from app.js/tauri-bridge.js
 
 const TAB_DEFINITIONS = {
     lights: {
@@ -54,6 +39,18 @@ const TAB_DEFINITIONS = {
         defaultLabel: 'Lights',
         defaultIcon: '💡',
         sections: ['lightsButtonSection', 'goveeSection']
+    },
+    magic: {
+        id: 'magic',
+        defaultLabel: 'Magic',
+        defaultIcon: '✨',
+        sections: ['magicSection']
+    },
+    settings: {
+        id: 'settings',
+        defaultLabel: 'Settings',
+        defaultIcon: '⚙️',
+        sections: ['parentalControlsSection']
     }
 };
 const TAB_MANAGED_SECTION_IDS = Array.from(
@@ -68,6 +65,7 @@ let tabsConfig = null;
 let goveeCloudDevices = [];
 let goveeCloudDevicesLoaded = false;
 let goveeCloudDevicesLoading = false;
+let toastTimer = null;
 
 
 function getNativeTtsBridge() {
@@ -718,7 +716,7 @@ window.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Load tabs config before initializing tab controls
-    await loadTabsConfig();
+    // await loadTabsConfig(); // Removed as it is empty/deprecated in app.js
     initTabControls();
     updateToddlerContentSourceInfo();
     updateCloudEditorVisibility();
