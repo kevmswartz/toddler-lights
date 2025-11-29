@@ -1,5 +1,4 @@
-// Shared Tauri bridge and runtime detection
-// This file provides common utilities used by both app.js and lights.js
+// Shared Tauri bridge and runtime detection for the Govee UI
 
 const tauriBridge = typeof window !== 'undefined' ? window.__TAURI__ : undefined;
 

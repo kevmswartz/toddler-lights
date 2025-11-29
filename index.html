@@ -1,617 +1,181 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Toddler Lights</title>
-    <link rel="stylesheet" href="dist/tailwind.css">
+    <title>Govee Lights</title>
+    <link rel="stylesheet" href="tailwind.css">
     <style>
         body {
             -webkit-tap-highlight-color: transparent;
         }
-
-        button {
-            touch-action: manipulation;
-        }
-
-        .min-h-screen {
-            min-height: 100vh;
-            min-height: 100svh;
-        }
-
-        @supports (min-height: 100dvh) {
-            .min-h-screen {
-                min-height: 100dvh;
-            }
-        }
-
-        body.fireworks-open,
-        body.timer-open,
-        body.youtube-player-open {
-            overflow: hidden;
-        }
-
-        .showcase-highlight {
-            outline: 4px solid rgba(255, 255, 255, 0.7);
-            outline-offset: 4px;
-            transition: outline-offset 0.2s ease, outline-color 0.2s ease;
-        }
-
-        .timer-overlay {
-            backdrop-filter: blur(16px);
-            background: rgba(15, 23, 42, 0.72);
-        }
-
-        .fireworks-overlay {
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(8px);
-            background: rgba(15, 23, 42, 0.8);
-            padding: clamp(1.5rem, 4vw, 3rem);
-        }
-
-        .fireworks-stage {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-            pointer-events: none;
-            background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.12), rgba(15, 23, 42, 0.65));
-        }
-
-        .fireworks-content {
-            position: relative;
-            z-index: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 1.5rem;
-            width: 100%;
-            max-width: 640px;
-            margin: auto;
-            padding: 2.5rem 1.5rem 3rem;
-            text-align: center;
-        }
-
-        .firework-particle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0.75rem;
-            height: 0.75rem;
-            border-radius: 9999px;
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(0.5);
-            animation: fireworkTravel 1000ms ease-out forwards;
-        }
-
-        @keyframes fireworkTravel {
-            0% {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(0.5);
-            }
-
-            80% {
-                opacity: 1;
-            }
-
-            100% {
-                opacity: 0;
-                transform: translate(calc(var(--x) - 50%), calc(var(--y) - 50%)) scale(0.1);
-            }
-        }
-
-        .tab-hidden {
-            display: none !important;
-        }
-
-        #bottomTabNav {
-            box-shadow: 0 -12px 32px rgba(15, 23, 42, 0.35);
-            bottom: 0;
-            padding-bottom: env(safe-area-inset-bottom, 0px);
-        }
-
-        #bottomTabNav button[data-tab-active="true"] {
-            background: rgba(255, 255, 255, 0.18);
-            color: #fff;
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        @keyframes pulse-grow {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-
-            50% {
-                transform: scale(1.2);
-                opacity: 0.8;
-            }
-        }
-
-        @keyframes bounce-float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
-        }
-
-        @keyframes rotate-pulse {
-
-            0%,
-            100% {
-                transform: rotate(0deg) scale(1);
-            }
-
-            25% {
-                transform: rotate(90deg) scale(1.1);
-            }
-
-            50% {
-                transform: rotate(180deg) scale(1);
-            }
-
-            75% {
-                transform: rotate(270deg) scale(1.1);
-            }
-        }
-
-        @keyframes wiggle {
-
-            0%,
-            100% {
-                transform: rotate(0deg);
-            }
-
-            25% {
-                transform: rotate(-15deg);
-            }
-
-            75% {
-                transform: rotate(15deg);
-            }
-        }
-
-        @keyframes rainbow-glow {
-            0% {
-                filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.6));
-            }
-
-            33% {
-                filter: drop-shadow(0 0 20px rgba(0, 255, 0, 0.6));
-            }
-
-            66% {
-                filter: drop-shadow(0 0 20px rgba(0, 0, 255, 0.6));
-            }
-
-            100% {
-                filter: drop-shadow(0 0 20px rgba(255, 0, 0, 0.6));
-            }
-        }
-
-        .timer-emoji-btn[data-selected="true"] {
-            background: rgba(255, 255, 255, 0.35);
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.6);
-        }
-
-        .youtube-mode-btn[data-selected="true"] {
-            background: rgba(255, 255, 255, 0.25);
-            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
-        }
-
-        /* Hide scrollbars for carousel sections */
-        #kidQuickSection .overflow-x-auto::-webkit-scrollbar {
-            display: none;
-        }
-
-        /* Snap scrolling for carousel items */
-        #toddlerQuickColumn>button {
-            scroll-snap-align: start;
-        }
     </style>
 </head>
+<body class="min-h-screen bg-slate-950 text-slate-100">
+    <div class="mx-auto max-w-5xl px-4 py-10 space-y-8 md:px-8">
+        <header class="space-y-3">
+            <h1 class="text-3xl font-bold text-white md:text-4xl">Govee Lights Controller</h1>
+            <p class="text-slate-200">Send LAN UDP commands from the Tauri shell or fall back to the Govee Cloud API.</p>
+            <div class="flex flex-wrap items-center gap-3 text-sm">
+                <span id="runtimeBadge" class="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 font-semibold text-white">
+                    Runtime: detecting…
+                </span>
+                <span id="runtimeNote" class="text-slate-300">Waiting for app startup.</span>
+            </div>
+        </header>
 
-<body class="min-h-screen bg-gradient-to-br from-indigo-500 via-indigo-600 to-purple-700 text-white">
-    <!-- Settings Lock Button -->
-    <button id="settingsLock"
-        class="fixed left-5 top-5 z-30 flex h-16 w-16 items-center justify-center rounded-full bg-white/10 text-2xl shadow-lg backdrop-blur transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/60 select-none"
-        style="user-select: none; -webkit-user-select: none; -moz-user-select: none;" onmousedown="startSettingsHold()"
-        onmouseup="stopSettingsHold()" onmouseleave="stopSettingsHold()" ontouchstart="startSettingsHold()"
-        ontouchend="stopSettingsHold()" onclick="handleSettingsClick(event)">
-        <svg class="absolute inset-0 h-full w-full -rotate-90 pointer-events-none" aria-hidden="true">
-            <circle id="progressCircle" cx="32" cy="32" r="26" stroke="#c4b5fd" stroke-width="4" stroke-dasharray="163"
-                stroke-dashoffset="163" fill="none"></circle>
-        </svg>
-        <span class="relative pointer-events-none">⚙️</span>
-    </button>
+        <section class="space-y-4 rounded-3xl bg-white/5 p-6 shadow-2xl backdrop-blur-md md:p-8">
+            <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-white">LAN Light</h2>
+                    <p class="text-sm text-slate-300">Use UDP port 4003 on your Wi‑Fi network. Commands run locally inside the Tauri app.</p>
+                </div>
+                <div id="lanStatus" class="text-sm text-amber-100"></div>
+            </div>
 
-    <button
-        class="fixed right-5 top-5 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-xl shadow-lg backdrop-blur transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/60"
-        onclick="toggleTheme()" aria-label="Toggle theme">
-        🌓
-    </button>
+            <div class="grid gap-4 md:grid-cols-3">
+                <div class="space-y-3">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-indigo-200">Light IP</label>
+                    <input id="lanIp" type="text" class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-slate-400 focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/50" placeholder="192.168.x.x">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-indigo-200">Port</label>
+                    <input id="lanPort" type="number" class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-slate-400 focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/50" placeholder="4003">
+                    <button id="saveLanTarget" type="button" class="w-full rounded-2xl bg-white/20 px-4 py-3 text-sm font-semibold text-white transition hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/40">Save target</button>
+                </div>
 
-    <!-- PIN Modal -->
-    <div id="pinModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 backdrop-blur">
-        <div class="w-[90%] max-w-xs rounded-3xl bg-white p-6 text-center text-slate-900 shadow-2xl">
-            <h2 class="text-xl font-semibold text-indigo-600">Enter Grown-up PIN</h2>
-            <p class="mt-1 text-sm text-slate-500">Hold the gear button, then type the code.</p>
-            <div id="pinDisplay"
-                class="mx-auto mt-4 flex h-12 w-full max-w-[220px] items-center justify-center gap-3 rounded-full bg-indigo-50 text-2xl font-semibold tracking-[0.65em] text-indigo-600">
-                ••••</div>
-            <div class="mt-6 grid grid-cols-3 gap-3">
-                <button
-                    class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                    onclick="enterPin('1')">1</button>
-                <button
-                    class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                    onclick="enterPin('2')">2</button>
-                <button
-                    class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                    onclick="enterPin('3')">3</button>
-                <button
-                    class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                    onclick="enterPin('4')">4</button>
-                <button
-                    class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                    onclick="enterPin('5')">5</button>
-                <button
-                    class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                    onclick="enterPin('6')">6</button>
-                <button
-                    class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                    onclick="enterPin('7')">7</button>
-                <button
-                    class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                    onclick="enterPin('8')">8</button>
-                <button
-                    class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                    onclick="enterPin('9')">9</button>
-                <button
-                    class="col-span-3 rounded-2xl bg-indigo-200 py-3 text-sm font-semibold uppercase tracking-wide text-indigo-700 transition hover:bg-indigo-300 active:scale-95"
-                    onclick="clearPin()">Clear</button>
-                <button <div class="flex items-center gap-2">
-                    <!-- Room Selector Dropdown -->
-                    <select id="roomSelector" onchange="setCurrentRoom(this.value, 'manual')"
-                        class="rounded-lg border border-white/40 bg-white/20 px-2 py-1 text-xs font-semibold text-white focus:border-white/60 focus:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
-                        style="color: white; background-color: rgba(255, 255, 255, 0.2);">
-                        <option value="" style="background-color: #1e1b4b; color: white;">All Rooms</option>
+                <div class="space-y-3">
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="lanOn" type="button" class="rounded-2xl bg-emerald-500/30 px-4 py-2 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-500/40">On</button>
+                        <button id="lanOff" type="button" class="rounded-2xl bg-rose-500/30 px-4 py-2 text-sm font-semibold text-rose-50 transition hover:bg-rose-500/40">Off</button>
+                        <button id="lanToggle" type="button" class="rounded-2xl bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">Toggle</button>
+                        <button id="lanStatusBtn" type="button" class="rounded-2xl bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">Get status</button>
+                    </div>
+
+                    <div class="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-3">
+                        <label class="text-xs font-semibold uppercase tracking-wide text-indigo-200">Brightness</label>
+                        <input id="lanBrightness" type="range" min="1" max="100" class="w-full" value="50">
+                        <div class="flex items-center justify-between text-sm text-slate-200">
+                            <span>Level: <span id="lanBrightnessValue">50%</span></span>
+                            <button id="lanApplyBrightness" type="button" class="rounded-xl bg-white/15 px-3 py-1 text-xs font-semibold text-white transition hover:bg-white/25">Apply</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-3">
+                        <label class="text-xs font-semibold uppercase tracking-wide text-indigo-200">Color</label>
+                        <div class="flex items-center gap-3">
+                            <input id="lanColor" type="color" class="h-12 w-16 rounded-lg border border-white/20 bg-white/5" value="#ffcc88">
+                            <button id="lanApplyColor" type="button" class="rounded-xl bg-white/15 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/25">Send color</button>
+                        </div>
+                        <div class="flex flex-wrap gap-2">
+                            <button data-preset="warm" class="preset-btn rounded-xl bg-white/10 px-3 py-1 text-xs font-semibold text-white transition hover:bg-white/20" type="button">Warm</button>
+                            <button data-preset="blue" class="preset-btn rounded-xl bg-white/10 px-3 py-1 text-xs font-semibold text-white transition hover:bg-white/20" type="button">Ocean</button>
+                            <button data-preset="sunset" class="preset-btn rounded-xl bg-white/10 px-3 py-1 text-xs font-semibold text-white transition hover:bg-white/20" type="button">Sunset</button>
+                            <button data-preset="white" class="preset-btn rounded-xl bg-white/10 px-3 py-1 text-xs font-semibold text-white transition hover:bg-white/20" type="button">White</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div class="text-xs font-semibold uppercase tracking-wide text-indigo-200">Last status</div>
+                    <div class="grid gap-2 text-sm">
+                        <div class="rounded-xl bg-slate-900/40 px-3 py-2">Online: <span id="lanOnline" class="font-mono text-white">—</span></div>
+                        <div class="rounded-xl bg-slate-900/40 px-3 py-2">Power: <span id="lanPower" class="font-mono text-white">—</span></div>
+                        <div class="rounded-xl bg-slate-900/40 px-3 py-2">Brightness: <span id="lanBrightnessLabel" class="font-mono text-white">—</span></div>
+                        <div class="rounded-xl bg-slate-900/40 px-3 py-2 flex items-center gap-2">Color:
+                            <span id="lanColorSwatch" class="h-5 w-5 rounded border border-white/30 bg-white/20"></span>
+                            <span id="lanColorLabel" class="font-mono text-white">—</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="space-y-4 rounded-3xl bg-white/5 p-6 shadow-2xl backdrop-blur-md md:p-8">
+            <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-white">LAN Discovery</h2>
+                    <p class="text-sm text-slate-300">Listen on UDP 4002 and send the multicast probe to 239.255.255.250:4001.</p>
+                </div>
+                <button id="discoverLan" type="button" class="rounded-2xl bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">Discover lights</button>
+            </div>
+            <div id="discoveryResults" class="space-y-2 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm text-slate-200">
+                <p>No devices discovered yet.</p>
+            </div>
+        </section>
+
+        <section class="space-y-4 rounded-3xl bg-white/5 p-6 shadow-2xl backdrop-blur-md md:p-8">
+            <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h2 class="text-xl font-bold text-white">Govee Cloud</h2>
+                    <p class="text-sm text-slate-300">Requires the official Govee developer API key. All calls proxy through the Tauri backend.</p>
+                </div>
+                <div id="cloudStatus" class="text-sm text-indigo-100"></div>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-3">
+                <div class="space-y-3">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-indigo-200">API Key</label>
+                    <input id="cloudApiKey" type="password" class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-slate-400 focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/50" placeholder="Paste your Govee API key">
+                    <div class="flex flex-wrap gap-2">
+                        <button id="saveApiKey" type="button" class="rounded-2xl bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">Save key</button>
+                        <button id="clearApiKey" type="button" class="hidden rounded-2xl bg-rose-500/30 px-4 py-2 text-sm font-semibold text-rose-50 transition hover:bg-rose-500/40">Clear</button>
+                        <button id="loadCloudDevices" type="button" class="rounded-2xl bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">Load devices</button>
+                    </div>
+                    <p id="cloudKeyStatus" class="text-xs text-slate-300">No API key saved.</p>
+                </div>
+
+                <div class="space-y-3">
+                    <label class="text-xs font-semibold uppercase tracking-wide text-indigo-200">Devices</label>
+                    <select id="cloudDeviceSelect" class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-sm text-white focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/50">
+                        <option value="">Select a device…</option>
                     </select>
-
-                    <!-- Auto-detect Toggle Button -->
-                    <button id="roomAutoDetectToggle" onclick="toggleRoomAutoDetect()"
-                        class="flex items-center justify-center gap-1 px-2 h-7 rounded-lg border border-white/30 bg-white/10 hover:bg-white/20 active:bg-white/30 transition-colors whitespace-nowrap"
-                        title="Toggle auto room detection">
-                        <span id="roomAutoDetectIcon" class="text-sm">🔍</span>
-                        <span class="text-xs font-semibold">Auto</span>
-                    </button>
-
-                    <!-- Locate Button -->
-                    <button id="roomLocateButton" onclick="manuallyLocateRoom()"
-                        class="flex items-center justify-center w-7 h-7 rounded-lg border border-white/30 bg-white/10 hover:bg-white/20 active:bg-white/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        title="Find current room">
-                        <span class="text-sm">📡</span>
-                    </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Tab Buttons Section -->
-    <div id="bottomTabButtons" class="mx-auto flex w-full max-w-4xl items-stretch justify-around gap-2 px-4 py-3">
-    </div>
-    </nav>
-
-    <div id="toastContainer" class="pointer-events-none fixed left-1/2 top-6 z-50 hidden -translate-x-1/2 transform">
-    </div>
-
-    <div id="timerOverlay"
-        class="timer-overlay fixed inset-0 z-50 hidden items-center justify-center px-6 py-12 text-white">
-        <div class="w-full max-w-md rounded-3xl bg-white/10 p-8 shadow-2xl">
-            <div class="text-center mb-6">
-                <div id="timerOriginalTime" class="text-lg font-semibold text-indigo-200">5:00</div>
-            </div>
-
-            <div class="relative mx-auto flex h-64 w-64 items-center justify-center">
-                <div id="timerSpinnerEmoji" class="absolute text-9xl" style="animation: spin 3s linear infinite;">⭐
+                    <p class="text-xs text-slate-300">You can also enter a device id + model manually.</p>
+                    <input id="cloudDeviceId" type="text" class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-slate-400 focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/50" placeholder="device id">
+                    <input id="cloudModel" type="text" class="w-full rounded-2xl border border-white/20 bg-white/10 px-4 py-3 text-white placeholder:text-slate-400 focus:border-white/50 focus:outline-none focus:ring-2 focus:ring-white/50" placeholder="model (sku)">
                 </div>
-                <div class="relative flex flex-col items-center justify-center text-center z-10">
-                    <span id="timerCountdown"
-                        class="text-5xl font-extrabold tracking-tight text-white drop-shadow-lg">00:00</span>
+
+                <div class="space-y-3 rounded-2xl border border-white/10 bg-white/5 p-4">
+                    <div class="grid grid-cols-2 gap-2">
+                        <button id="cloudOn" type="button" class="rounded-2xl bg-emerald-500/30 px-4 py-2 text-sm font-semibold text-emerald-50 transition hover:bg-emerald-500/40">On</button>
+                        <button id="cloudOff" type="button" class="rounded-2xl bg-rose-500/30 px-4 py-2 text-sm font-semibold text-rose-50 transition hover:bg-rose-500/40">Off</button>
+                        <button id="cloudToggle" type="button" class="rounded-2xl bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">Toggle</button>
+                        <button id="cloudState" type="button" class="rounded-2xl bg-white/15 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/25">Get state</button>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold uppercase tracking-wide text-indigo-200">Brightness</label>
+                        <input id="cloudBrightness" type="range" min="1" max="100" class="w-full" value="50">
+                        <div class="flex items-center justify-between text-sm text-slate-200">
+                            <span>Level: <span id="cloudBrightnessValue">50%</span></span>
+                            <button id="cloudApplyBrightness" type="button" class="rounded-xl bg-white/15 px-3 py-1 text-xs font-semibold text-white transition hover:bg-white/25">Apply</button>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-xs font-semibold uppercase tracking-wide text-indigo-200">Color</label>
+                        <div class="flex items-center gap-3">
+                            <input id="cloudColor" type="color" class="h-12 w-16 rounded-lg border border-white/20 bg-white/5" value="#ffcc88">
+                            <button id="cloudApplyColor" type="button" class="rounded-xl bg-white/15 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/25">Send color</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-6 flex flex-wrap justify-center gap-2">
-                <button type="button" data-timer-emoji="⭐"
-                    class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">⭐</button>
-                <button type="button" data-timer-emoji="🎨"
-                    class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">🎨</button>
-                <button type="button" data-timer-emoji="🦄"
-                    class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">🦄</button>
-                <button type="button" data-timer-emoji="🚀"
-                    class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">🚀</button>
-                <button type="button" data-timer-emoji="🌈"
-                    class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">🌈</button>
-                <button type="button" data-timer-emoji="🎈"
-                    class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">🎈</button>
-                <button type="button" data-timer-emoji="🍎"
-                    class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">🍎</button>
-                <button type="button" data-timer-emoji="⚡"
-                    class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">⚡</button>
+            <div class="rounded-2xl border border-white/10 bg-slate-900/50 p-4 text-sm text-white">
+                <div class="text-xs font-semibold uppercase tracking-wide text-indigo-200">Cloud state</div>
+                <pre id="cloudStateOutput" class="mt-2 whitespace-pre-wrap text-slate-100">No cloud state loaded.</pre>
             </div>
+        </section>
 
-            <button id="timerOverlayDismiss" onclick="cancelToddlerTimer()"
-                class="mt-6 w-full rounded-2xl bg-rose-500/80 px-5 py-4 text-base font-bold text-white shadow-lg transition hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-white/60">
-                Stop Timer
-            </button>
-        </div>
+        <section class="space-y-3 rounded-3xl bg-white/5 p-6 shadow-2xl backdrop-blur-md md:p-8">
+            <div class="flex items-center justify-between">
+                <h2 class="text-xl font-bold text-white">Activity</h2>
+                <button id="clearActivity" type="button" class="text-sm font-semibold text-white underline decoration-white/40 underline-offset-4 hover:decoration-white">Clear log</button>
+            </div>
+            <ul id="activityLog" class="space-y-2 text-sm text-slate-200">
+                <li class="text-slate-400">No activity yet.</li>
+            </ul>
+        </section>
     </div>
 
-    <div id="fireworksOverlay" class="fireworks-overlay fixed inset-0 z-40 hidden text-white">
-        <div id="fireworksStage" class="fireworks-stage"></div>
-        <div class="fireworks-content">
-            <div class="space-y-3">
-                <h2 class="text-4xl font-extrabold tracking-tight drop-shadow-lg">🎆 Fireworks Celebration</h2>
-                <p id="fireworksLabel" class="text-base font-semibold text-indigo-100 drop-shadow-md">Celebration
-                    time.
-                </p>
-            </div>
-            <button onclick="stopFireworksShow()"
-                class="rounded-full bg-white/20 px-6 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-white shadow-lg transition hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50">
-                End Fireworks
-            </button>
-        </div>
-    </div>
-
-    <div id="youtubePlayerOverlay" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/95 px-4 py-6">
-        <div class="relative w-full max-w-6xl">
-            <button onclick="closeYoutubePlayer()"
-                class="absolute -top-12 right-0 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/40">
-                Close Video
-            </button>
-            <div class="relative w-full pt-[56.25%]">
-                <iframe id="youtubePlayerFrame" class="absolute inset-0 h-full w-full rounded-2xl" src=""
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen>
-                    ```
-                    }
-
-                    .youtube-mode-btn[data-selected="true"] {
-                    background: rgba(255, 255, 255, 0.25);
-                    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
-                    }
-
-                    /* Hide scrollbars for carousel sections */
-                    #kidQuickSection .overflow-x-auto::-webkit-scrollbar {
-                    display: none;
-                    }
-
-                    /* Snap scrolling for carousel items */
-                    #toddlerQuickColumn>button {
-                    scroll-snap-align: start;
-                    }
-                    </style>
-                    </head>
-
-                    <body
-                        class="min-h-screen bg-gradient-to-br from-indigo-500 via-indigo-600 to-purple-700 text-white">
-                        <!-- Settings Lock Button -->
-                        <button id="settingsLock"
-                            class="fixed left-5 top-5 z-30 flex h-16 w-16 items-center justify-center rounded-full bg-white/10 text-2xl shadow-lg backdrop-blur transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/60 select-none"
-                            style="user-select: none; -webkit-user-select: none; -moz-user-select: none;"
-                            onmousedown="startSettingsHold()" onmouseup="stopSettingsHold()"
-                            onmouseleave="stopSettingsHold()" ontouchstart="startSettingsHold()"
-                            ontouchend="stopSettingsHold()" onclick="handleSettingsClick(event)">
-                            <svg class="absolute inset-0 h-full w-full -rotate-90 pointer-events-none"
-                                aria-hidden="true">
-                                <circle id="progressCircle" cx="32" cy="32" r="26" stroke="#c4b5fd" stroke-width="4"
-                                    stroke-dasharray="163" stroke-dashoffset="163" fill="none"></circle>
-                            </svg>
-                            <span class="relative pointer-events-none">⚙️</span>
-                        </button>
-
-                        <button
-                            class="fixed right-5 top-5 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-xl shadow-lg backdrop-blur transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/60"
-                            onclick="toggleTheme()" aria-label="Toggle theme">
-                            🌓
-                        </button>
-
-                        <!-- PIN Modal -->
-                        <div id="pinModal"
-                            class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 backdrop-blur">
-                            <div
-                                class="w-[90%] max-w-xs rounded-3xl bg-white p-6 text-center text-slate-900 shadow-2xl">
-                                <h2 class="text-xl font-semibold text-indigo-600">Enter Grown-up PIN</h2>
-                                <p class="mt-1 text-sm text-slate-500">Hold the gear button, then type the code.</p>
-                                <div id="pinDisplay"
-                                    class="mx-auto mt-4 flex h-12 w-full max-w-[220px] items-center justify-center gap-3 rounded-full bg-indigo-50 text-2xl font-semibold tracking-[0.65em] text-indigo-600">
-                                    ••••</div>
-                                <div class="mt-6 grid grid-cols-3 gap-3">
-                                    <button
-                                        class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                                        onclick="enterPin('1')">1</button>
-                                    <button
-                                        class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                                        onclick="enterPin('2')">2</button>
-                                    <button
-                                        class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                                        onclick="enterPin('3')">3</button>
-                                    <button
-                                        class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                                        onclick="enterPin('4')">4</button>
-                                    <button
-                                        class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                                        onclick="enterPin('5')">5</button>
-                                    <button
-                                        class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                                        onclick="enterPin('6')">6</button>
-                                    <button
-                                        class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                                        onclick="enterPin('7')">7</button>
-                                    <button
-                                        class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                                        onclick="enterPin('8')">8</button>
-                                    <button
-                                        class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                                        onclick="enterPin('9')">9</button>
-                                    <button
-                                        class="col-span-3 rounded-2xl bg-indigo-200 py-3 text-sm font-semibold uppercase tracking-wide text-indigo-700 transition hover:bg-indigo-300 active:scale-95"
-                                        onclick="clearPin()">Clear</button>
-                                    <button
-                                        class="rounded-2xl bg-indigo-100 py-4 text-xl font-bold text-indigo-700 shadow-inner transition hover:bg-indigo-200 active:scale-95"
-                                        onclick="enterPin('0')">0</button>
-                                    <button
-                                        class="rounded-2xl bg-slate-200 py-4 text-base font-semibold text-slate-700 shadow-inner transition hover:bg-slate-300 active:scale-95"
-                                        onclick="closePinModal()">Cancel</button>
-                                </div>
-                                class="hidden bg-gradient-to-r from-purple-900/90 to-indigo-900/90 border-t
-                                border-white/20">
-                                <div class="mx-auto flex w-full max-w-4xl items-center justify-between gap-2 px-3 py-2">
-                                    <div class="flex items-center gap-2 flex-1 min-w-0">
-                                        <span id="currentRoomIndicator" class="text-xs font-semibold truncate">📍
-                                            All Rooms</span>
-                                    </div>
-                                    <div class="flex items-center gap-2">
-                                        <!-- Room Selector Dropdown -->
-                                        <select id="roomSelector" onchange="setCurrentRoom(this.value, 'manual')"
-                                            class="rounded-lg border border-white/40 bg-white/20 px-2 py-1 text-xs font-semibold text-white focus:border-white/60 focus:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50"
-                                            style="color: white; background-color: rgba(255, 255, 255, 0.2);">
-                                            <option value="" style="background-color: #1e1b4b; color: white;">All
-                                                Rooms</option>
-                                        </select>
-
-                                        <!-- Auto-detect Toggle Button -->
-                                        <button id="roomAutoDetectToggle" onclick="toggleRoomAutoDetect()"
-                                            class="flex items-center justify-center gap-1 px-2 h-7 rounded-lg border border-white/30 bg-white/10 hover:bg-white/20 active:bg-white/30 transition-colors whitespace-nowrap"
-                                            title="Toggle auto room detection">
-                                            <span id="roomAutoDetectIcon" class="text-sm">🔍</span>
-                                            <span class="text-xs font-semibold">Auto</span>
-                                        </button>
-
-                                        <!-- Locate Button -->
-                                        <button id="roomLocateButton" onclick="manuallyLocateRoom()"
-                                            class="flex items-center justify-center w-7 h-7 rounded-lg border border-white/30 bg-white/10 hover:bg-white/20 active:bg-white/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                                            title="Find current room">
-                                            <span class="text-sm">📡</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Tab Buttons Section -->
-                            <div id="bottomTabButtons"
-                                class="mx-auto flex w-full max-w-4xl items-stretch justify-around gap-2 px-4 py-3">
-                            </div>
-                            </nav>
-
-                            <div id="toastContainer"
-                                class="pointer-events-none fixed left-1/2 top-6 z-50 hidden -translate-x-1/2 transform">
-                            </div>
-
-                            <div id="timerOverlay"
-                                class="timer-overlay fixed inset-0 z-50 hidden items-center justify-center px-6 py-12 text-white">
-                                <div class="w-full max-w-md rounded-3xl bg-white/10 p-8 shadow-2xl">
-                                    <div class="text-center mb-6">
-                                        <div id="timerOriginalTime" class="text-lg font-semibold text-indigo-200">
-                                            5:00</div>
-                                    </div>
-
-                                    <div class="relative mx-auto flex h-64 w-64 items-center justify-center">
-                                        <div id="timerSpinnerEmoji" class="absolute text-9xl"
-                                            style="animation: spin 3s linear infinite;">⭐
-                                        </div>
-                                        <div
-                                            class="relative flex flex-col items-center justify-center text-center z-10">
-                                            <span id="timerCountdown"
-                                                class="text-5xl font-extrabold tracking-tight text-white drop-shadow-lg">00:00</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-6 flex flex-wrap justify-center gap-2">
-                                        <button type="button" data-timer-emoji="⭐"
-                                            class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">⭐</button>
-                                        <button type="button" data-timer-emoji="🎨"
-                                            class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">🎨</button>
-                                        <button type="button" data-timer-emoji="🦄"
-                                            class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">🦄</button>
-                                        <button type="button" data-timer-emoji="🚀"
-                                            class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">🚀</button>
-                                        <button type="button" data-timer-emoji="🌈"
-                                            class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">🌈</button>
-                                        <button type="button" data-timer-emoji="🎈"
-                                            class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">🎈</button>
-                                        <button type="button" data-timer-emoji="🍎"
-                                            class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">🍎</button>
-                                        <button type="button" data-timer-emoji="⚡"
-                                            class="timer-emoji-btn rounded-xl bg-white/15 px-3 py-2 text-3xl transition hover:bg-white/25 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white/40 active:scale-95">⚡</button>
-                                    </div>
-
-                                    <button id="timerOverlayDismiss" onclick="cancelToddlerTimer()"
-                                        class="mt-6 w-full rounded-2xl bg-rose-500/80 px-5 py-4 text-base font-bold text-white shadow-lg transition hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-white/60">
-                                        Stop Timer
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div id="fireworksOverlay" class="fireworks-overlay fixed inset-0 z-40 hidden text-white">
-                                <div id="fireworksStage" class="fireworks-stage"></div>
-                                <div class="fireworks-content">
-                                    <div class="space-y-3">
-                                        <h2 class="text-4xl font-extrabold tracking-tight drop-shadow-lg">🎆
-                                            Fireworks Celebration</h2>
-                                        <p id="fireworksLabel"
-                                            class="text-base font-semibold text-indigo-100 drop-shadow-md">
-                                            Celebration
-                                            time.
-                                        </p>
-                                    </div>
-                                    <button onclick="stopFireworksShow()"
-                                        class="rounded-full bg-white/20 px-6 py-3 text-xs font-semibold uppercase tracking-[0.35em] text-white shadow-lg transition hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50">
-                                        End Fireworks
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div id="youtubePlayerOverlay"
-                                class="fixed inset-0 z-50 hidden items-center justify-center bg-black/95 px-4 py-6">
-                                <div class="relative w-full max-w-6xl">
-                                    <button onclick="closeYoutubePlayer()"
-                                        class="absolute -top-12 right-0 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold uppercase tracking-wide text-white transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/40">
-                                        Close Video
-                                    </button>
-                                    <div class="relative w-full pt-[56.25%]">
-                                        <iframe id="youtubePlayerFrame"
-                                            class="absolute inset-0 h-full w-full rounded-2xl" src="" frameborder="0"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowfullscreen>
-                                        </iframe>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <script src="js/tauri-bridge.js"></script>
-                            <script src="vendor/confetti.js"></script>
-                            <script src="lights.js"></script>
-                            <script src="app.js"></script>
-                    </body>
-
+    <script src="js/tauri-bridge.js"></script>
+    <script src="lights.js"></script>
+</body>
 </html>
-```

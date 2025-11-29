@@ -9,15 +9,13 @@ const watchMode = args.includes('--watch');
 
 const staticFiles = [
   'index.html',
-  'app.js',
-  'lights.js'
+  'lights.js',
+  'js/tauri-bridge.js'
   // Config files (app-config.json, button-types.json, rooms.json) are in public/config/
   // and are copied via copyDirectoryContents('public', distDir) below
 ];
 
-const vendorFiles = [
-  { src: 'node_modules/canvas-confetti/dist/confetti.browser.js', dest: 'vendor/confetti.js' }
-];
+const vendorFiles = [];
 
 function ensureDir(dirPath) {
   fs.mkdirSync(dirPath, { recursive: true });
